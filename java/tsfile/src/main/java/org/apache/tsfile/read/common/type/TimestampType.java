@@ -19,11 +19,20 @@
 
 package org.apache.tsfile.read.common.type;
 
+import org.apache.tsfile.block.column.ColumnBuilder;
+import org.apache.tsfile.enums.TSDataType;
+import org.apache.tsfile.read.common.block.column.LongColumnBuilder;
+
 public class TimestampType extends AbstractLongType {
 
   public static final TimestampType TIMESTAMP = new TimestampType();
 
   private TimestampType() {}
+
+  @Override
+  public ColumnBuilder createColumnBuilder(int expectedEntries) {
+    return new LongColumnBuilder(null, expectedEntries, TSDataType.TIMESTAMP);
+  }
 
   @Override
   public TypeEnum getTypeEnum() {

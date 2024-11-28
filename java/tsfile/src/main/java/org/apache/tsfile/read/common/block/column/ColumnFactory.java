@@ -27,7 +27,7 @@ public class ColumnFactory {
     switch (dataType) {
       case INT64:
       case TIMESTAMP:
-        return new LongColumn(initialCapacity);
+        return new LongColumn(initialCapacity, dataType);
       case DOUBLE:
         return new DoubleColumn(initialCapacity);
       case FLOAT:
@@ -35,10 +35,10 @@ public class ColumnFactory {
       case TEXT:
       case STRING:
       case BLOB:
-        return new BinaryColumn(initialCapacity);
+        return new BinaryColumn(initialCapacity, dataType);
       case INT32:
       case DATE:
-        return new IntColumn(initialCapacity);
+        return new IntColumn(initialCapacity, dataType);
       case BOOLEAN:
         return new BooleanColumn(initialCapacity);
       default:

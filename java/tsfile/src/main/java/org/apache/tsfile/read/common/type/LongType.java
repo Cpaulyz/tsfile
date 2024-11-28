@@ -19,11 +19,20 @@
 
 package org.apache.tsfile.read.common.type;
 
+import org.apache.tsfile.block.column.ColumnBuilder;
+import org.apache.tsfile.enums.TSDataType;
+import org.apache.tsfile.read.common.block.column.LongColumnBuilder;
+
 public class LongType extends AbstractLongType {
 
   public static final LongType INT64 = new LongType();
 
   private LongType() {}
+
+  @Override
+  public ColumnBuilder createColumnBuilder(int expectedEntries) {
+    return new LongColumnBuilder(null, expectedEntries, TSDataType.INT64);
+  }
 
   @Override
   public TypeEnum getTypeEnum() {

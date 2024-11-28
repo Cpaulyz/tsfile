@@ -22,6 +22,7 @@ package org.apache.tsfile.common.block;
 import org.apache.tsfile.block.column.Column;
 import org.apache.tsfile.block.column.ColumnEncoding;
 import org.apache.tsfile.common.conf.TSFileConfig;
+import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.read.common.block.column.BinaryColumn;
 import org.apache.tsfile.read.common.block.column.BooleanColumn;
 import org.apache.tsfile.read.common.block.column.ColumnEncoder;
@@ -77,12 +78,12 @@ public class RunLengthColumnEncoderTest {
 
   @Test
   public void testIntColumn() {
-    testInternal(new IntColumn(1, Optional.empty(), new int[] {0}));
+    testInternal(new IntColumn(1, Optional.empty(), new int[] {0}, TSDataType.INT32));
   }
 
   @Test
   public void testLongColumn() {
-    testInternal(new LongColumn(1, Optional.empty(), new long[] {0L}));
+    testInternal(new LongColumn(1, Optional.empty(), new long[] {0L}, TSDataType.INT64));
   }
 
   @Test
@@ -99,6 +100,9 @@ public class RunLengthColumnEncoderTest {
   public void testTextColumn() {
     testInternal(
         new BinaryColumn(
-            1, Optional.empty(), new Binary[] {new Binary("foo", TSFileConfig.STRING_CHARSET)}));
+            1,
+            Optional.empty(),
+            new Binary[] {new Binary("foo", TSFileConfig.STRING_CHARSET)},
+            TSDataType.TEXT));
   }
 }

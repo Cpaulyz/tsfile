@@ -88,18 +88,24 @@ public class TsBlockFilterTest {
 
     BooleanColumn booleanColumn =
         new BooleanColumn(booleans.length, Optional.of(valueIsNull), booleans);
-    IntColumn intColumn = new IntColumn(ints.length, Optional.of(valueIsNull), ints);
-    LongColumn longColumn = new LongColumn(longs.length, Optional.of(valueIsNull), longs);
+    IntColumn intColumn =
+        new IntColumn(ints.length, Optional.of(valueIsNull), ints, TSDataType.INT32);
+    LongColumn longColumn =
+        new LongColumn(longs.length, Optional.of(valueIsNull), longs, TSDataType.INT64);
     FloatColumn floatColumn = new FloatColumn(floats.length, Optional.of(valueIsNull), floats);
     DoubleColumn doubleColumn = new DoubleColumn(doubles.length, Optional.of(valueIsNull), doubles);
     BinaryColumn binaryColumn =
         new BinaryColumn(
-            binaries.length, Optional.of(new boolean[] {false, true, false}), binaries);
+            binaries.length,
+            Optional.of(new boolean[] {false, true, false}),
+            binaries,
+            TSDataType.TEXT);
     BinaryColumn nullColumn =
         new BinaryColumn(
             3,
             Optional.of(new boolean[] {true, false, true}),
-            new Binary[] {null, new Binary("a", STRING_CHARSET), null});
+            new Binary[] {null, new Binary("a", STRING_CHARSET), null},
+            TSDataType.TEXT);
 
     timeColumn = new TimeColumn(timestamps.length, timestamps);
     valueColumn[getMeasurementId(TSDataType.BOOLEAN)] = booleanColumn;

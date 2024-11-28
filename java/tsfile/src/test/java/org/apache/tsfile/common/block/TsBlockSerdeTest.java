@@ -137,7 +137,10 @@ public class TsBlockSerdeTest {
         new TsBlock(
             new TimeColumn(1, new long[] {0}),
             new BinaryColumn(
-                1, Optional.empty(), new Binary[] {new Binary(outputStream.toByteArray())}));
+                1,
+                Optional.empty(),
+                new Binary[] {new Binary(outputStream.toByteArray())},
+                TSDataType.TEXT));
 
     TsBlockSerde tsBlockSerde = new TsBlockSerde();
     try {
@@ -172,7 +175,8 @@ public class TsBlockSerdeTest {
             new BinaryColumn(
                 1,
                 Optional.of(new boolean[] {false}),
-                new Binary[] {new Binary(outputStream.toByteArray())}));
+                new Binary[] {new Binary(outputStream.toByteArray())},
+                TSDataType.TEXT));
 
     TsBlockSerde tsBlockSerde = new TsBlockSerde();
     try {

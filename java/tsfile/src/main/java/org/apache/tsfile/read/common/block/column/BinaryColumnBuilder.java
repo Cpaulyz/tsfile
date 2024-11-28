@@ -41,8 +41,13 @@ public class BinaryColumnBuilder implements ColumnBuilder {
       RamUsageEstimator.shallowSizeOfInstance(BinaryColumnBuilder.class);
 
   private final ColumnBuilderStatus columnBuilderStatus;
-  public static final BinaryColumn NULL_VALUE_BLOCK =
-      new BinaryColumn(0, 1, new boolean[] {true}, new Binary[1]);
+  private final TSDataType dataType;
+  public static final BinaryColumn NULL_STRING_BLOCK =
+      new BinaryColumn(0, 1, new boolean[] {true}, new Binary[1], TSDataType.STRING);
+  public static final BinaryColumn NULL_TEXT_BLOCK =
+      new BinaryColumn(0, 1, new boolean[] {true}, new Binary[1], TSDataType.TEXT);
+  public static final BinaryColumn NULL_BLOB_BLOCK =
+      new BinaryColumn(0, 1, new boolean[] {true}, new Binary[1], TSDataType.BLOB);
 
   private boolean initialized;
   private final int initialEntryCount;
@@ -57,9 +62,11 @@ public class BinaryColumnBuilder implements ColumnBuilder {
 
   private long arraysRetainedSizeInBytes;
 
-  public BinaryColumnBuilder(ColumnBuilderStatus columnBuilderStatus, int expectedEntries) {
+  public BinaryColumnBuilder(
+      ColumnBuilderStatus columnBuilderStatus, int expectedEntries, TSDataType dataType) {
     this.initialEntryCount = max(expectedEntries, 1);
     this.columnBuilderStatus = columnBuilderStatus;
+    this.dataType = dataType;
     updateArraysDataSize();
   }
 
@@ -112,14 +119,20 @@ public class BinaryColumnBuilder implements ColumnBuilder {
   @Override
   public Column build() {
     if (!hasNonNullValue) {
-      return new RunLengthEncodedColumn(NULL_VALUE_BLOCK, positionCount);
+      if (dataType == TSDataType.STRING) {
+        return new RunLengthEncodedColumn(NULL_STRING_BLOCK, positionCount);
+      } else if (dataType == TSDataType.TEXT) {
+        return new RunLengthEncodedColumn(NULL_TEXT_BLOCK, positionCount);
+      } else if (dataType == TSDataType.BLOB) {
+        return new RunLengthEncodedColumn(NULL_BLOB_BLOCK, positionCount);
+      }
     }
-    return new BinaryColumn(0, positionCount, hasNullValue ? valueIsNull : null, values);
+    return new BinaryColumn(0, positionCount, hasNullValue ? valueIsNull : null, values, dataType);
   }
 
   @Override
   public TSDataType getDataType() {
-    return TSDataType.TEXT;
+    return dataType;
   }
 
   @Override
@@ -135,7 +148,8 @@ public class BinaryColumnBuilder implements ColumnBuilder {
   @Override
   public ColumnBuilder newColumnBuilderLike(ColumnBuilderStatus columnBuilderStatus) {
     // TODO we should take retain size into account here
-    return new BinaryColumnBuilder(columnBuilderStatus, calculateBlockResetSize(positionCount));
+    return new BinaryColumnBuilder(
+        columnBuilderStatus, calculateBlockResetSize(positionCount), dataType);
   }
 
   private void growCapacity() {

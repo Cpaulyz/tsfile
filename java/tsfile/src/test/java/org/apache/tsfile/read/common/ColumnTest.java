@@ -20,6 +20,7 @@
 package org.apache.tsfile.read.common;
 
 import org.apache.tsfile.block.column.Column;
+import org.apache.tsfile.enums.TSDataType;
 import org.apache.tsfile.read.common.block.column.BinaryColumn;
 import org.apache.tsfile.read.common.block.column.BinaryColumnBuilder;
 import org.apache.tsfile.read.common.block.column.BooleanColumn;
@@ -85,7 +86,7 @@ public class ColumnTest {
 
   @Test
   public void binaryColumnSubColumnTest() {
-    BinaryColumnBuilder columnBuilder = new BinaryColumnBuilder(null, 10);
+    BinaryColumnBuilder columnBuilder = new BinaryColumnBuilder(null, 10, TSDataType.TEXT);
     for (int i = 0; i < 10; i++) {
       columnBuilder.writeBinary(BytesUtils.valueOf(String.valueOf(i)));
     }
@@ -105,7 +106,7 @@ public class ColumnTest {
 
   @Test
   public void binaryColumnSubColumnCopyTest() {
-    BinaryColumnBuilder columnBuilder = new BinaryColumnBuilder(null, 10);
+    BinaryColumnBuilder columnBuilder = new BinaryColumnBuilder(null, 10, TSDataType.TEXT);
     for (int i = 0; i < 10; i++) {
       columnBuilder.writeBinary(BytesUtils.valueOf(String.valueOf(i)));
     }
@@ -247,7 +248,7 @@ public class ColumnTest {
 
   @Test
   public void intColumnSubColumnTest() {
-    IntColumnBuilder columnBuilder = new IntColumnBuilder(null, 10);
+    IntColumnBuilder columnBuilder = new IntColumnBuilder(null, 10, TSDataType.INT32);
     for (int i = 0; i < 10; i++) {
       columnBuilder.writeInt(i);
     }
@@ -267,7 +268,7 @@ public class ColumnTest {
 
   @Test
   public void intColumnSubColumnCopyTest() {
-    IntColumnBuilder columnBuilder = new IntColumnBuilder(null, 10);
+    IntColumnBuilder columnBuilder = new IntColumnBuilder(null, 10, TSDataType.INT32);
     for (int i = 0; i < 10; i++) {
       columnBuilder.writeInt(i);
     }
@@ -287,7 +288,7 @@ public class ColumnTest {
 
   @Test
   public void longColumnSubColumnTest() {
-    LongColumnBuilder columnBuilder = new LongColumnBuilder(null, 10);
+    LongColumnBuilder columnBuilder = new LongColumnBuilder(null, 10, TSDataType.INT64);
     for (int i = 0; i < 10; i++) {
       columnBuilder.writeLong(i);
     }
@@ -307,7 +308,7 @@ public class ColumnTest {
 
   @Test
   public void longColumnSubColumnCopyTest() {
-    LongColumnBuilder columnBuilder = new LongColumnBuilder(null, 10);
+    LongColumnBuilder columnBuilder = new LongColumnBuilder(null, 10, TSDataType.INT64);
     for (int i = 0; i < 10; i++) {
       columnBuilder.writeLong(i);
     }
@@ -337,7 +338,7 @@ public class ColumnTest {
 
   @Test
   public void runLengthEncodedColumnSubColumnTest() {
-    LongColumnBuilder longColumnBuilder = new LongColumnBuilder(null, 1);
+    LongColumnBuilder longColumnBuilder = new LongColumnBuilder(null, 1, TSDataType.INT64);
     longColumnBuilder.writeLong(1);
     RunLengthEncodedColumn column = new RunLengthEncodedColumn(longColumnBuilder.build(), 10);
     column = (RunLengthEncodedColumn) column.subColumn(5);
@@ -353,7 +354,7 @@ public class ColumnTest {
 
   @Test
   public void runLengthEncodedColumnSubColumnCopyTest() {
-    LongColumnBuilder longColumnBuilder = new LongColumnBuilder(null, 1);
+    LongColumnBuilder longColumnBuilder = new LongColumnBuilder(null, 1, TSDataType.INT64);
     longColumnBuilder.writeLong(1);
     RunLengthEncodedColumn column = new RunLengthEncodedColumn(longColumnBuilder.build(), 10);
     column = (RunLengthEncodedColumn) column.subColumnCopy(5);

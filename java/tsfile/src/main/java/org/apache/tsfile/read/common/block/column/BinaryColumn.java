@@ -44,16 +44,23 @@ public class BinaryColumn implements Column {
   private final Binary[] values;
 
   private final long retainedSizeInBytes;
+  private final TSDataType dataType;
 
-  public BinaryColumn(int initialCapacity) {
-    this(0, 0, null, new Binary[initialCapacity]);
+  public BinaryColumn(int initialCapacity, TSDataType dataType) {
+    this(0, 0, null, new Binary[initialCapacity], dataType);
   }
 
-  public BinaryColumn(int positionCount, Optional<boolean[]> valueIsNull, Binary[] values) {
-    this(0, positionCount, valueIsNull.orElse(null), values);
+  public BinaryColumn(
+      int positionCount, Optional<boolean[]> valueIsNull, Binary[] values, TSDataType dataType) {
+    this(0, positionCount, valueIsNull.orElse(null), values, dataType);
   }
 
-  BinaryColumn(int arrayOffset, int positionCount, boolean[] valueIsNull, Binary[] values) {
+  BinaryColumn(
+      int arrayOffset,
+      int positionCount,
+      boolean[] valueIsNull,
+      Binary[] values,
+      TSDataType dataType) {
     if (arrayOffset < 0) {
       throw new IllegalArgumentException("arrayOffset is negative");
     }
@@ -76,11 +83,12 @@ public class BinaryColumn implements Column {
     // TODO we need to sum up all the Binary's retainedSize here
     retainedSizeInBytes =
         INSTANCE_SIZE + sizeOfBooleanArray(positionCount) + sizeOfObjectArray(positionCount);
+    this.dataType = dataType;
   }
 
   @Override
   public TSDataType getDataType() {
-    return TSDataType.TEXT;
+    return dataType;
   }
 
   @Override
@@ -141,7 +149,7 @@ public class BinaryColumn implements Column {
   @Override
   public Column getRegion(int positionOffset, int length) {
     checkValidRegion(getPositionCount(), positionOffset, length);
-    return new BinaryColumn(positionOffset + arrayOffset, length, valueIsNull, values);
+    return new BinaryColumn(positionOffset + arrayOffset, length, valueIsNull, values, dataType);
   }
 
   @Override
@@ -154,7 +162,7 @@ public class BinaryColumn implements Column {
         valueIsNull != null ? Arrays.copyOfRange(valueIsNull, from, to) : null;
     Binary[] valuesCopy = Arrays.copyOfRange(values, from, to);
 
-    return new BinaryColumn(0, length, valueIsNullCopy, valuesCopy);
+    return new BinaryColumn(0, length, valueIsNullCopy, valuesCopy, dataType);
   }
 
   @Override
@@ -163,7 +171,7 @@ public class BinaryColumn implements Column {
       throw new IllegalArgumentException("fromIndex is not valid");
     }
     return new BinaryColumn(
-        arrayOffset + fromIndex, positionCount - fromIndex, valueIsNull, values);
+        arrayOffset + fromIndex, positionCount - fromIndex, valueIsNull, values, dataType);
   }
 
   @Override
@@ -178,7 +186,7 @@ public class BinaryColumn implements Column {
     Binary[] valuesCopy = Arrays.copyOfRange(values, from, positionCount);
 
     int length = positionCount - fromIndex;
-    return new BinaryColumn(0, length, valueIsNullCopy, valuesCopy);
+    return new BinaryColumn(0, length, valueIsNullCopy, valuesCopy, dataType);
   }
 
   @Override

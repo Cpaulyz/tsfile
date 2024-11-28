@@ -116,13 +116,17 @@ public class TsBlockBuilder {
         case DATE:
           valueColumnBuilders[i] =
               new IntColumnBuilder(
-                  tsBlockBuilderStatus.createColumnBuilderStatus(), initialExpectedEntries);
+                  tsBlockBuilderStatus.createColumnBuilderStatus(),
+                  initialExpectedEntries,
+                  types.get(i));
           break;
         case INT64:
         case TIMESTAMP:
           valueColumnBuilders[i] =
               new LongColumnBuilder(
-                  tsBlockBuilderStatus.createColumnBuilderStatus(), initialExpectedEntries);
+                  tsBlockBuilderStatus.createColumnBuilderStatus(),
+                  initialExpectedEntries,
+                  types.get(i));
           break;
         case FLOAT:
           valueColumnBuilders[i] =
@@ -139,7 +143,9 @@ public class TsBlockBuilder {
         case STRING:
           valueColumnBuilders[i] =
               new BinaryColumnBuilder(
-                  tsBlockBuilderStatus.createColumnBuilderStatus(), initialExpectedEntries);
+                  tsBlockBuilderStatus.createColumnBuilderStatus(),
+                  initialExpectedEntries,
+                  types.get(i));
           break;
         default:
           throw new IllegalArgumentException("Unknown data type: " + types.get(i));
@@ -188,13 +194,17 @@ public class TsBlockBuilder {
         case DATE:
           valueColumnBuilders[i] =
               new IntColumnBuilder(
-                  tsBlockBuilderStatus.createColumnBuilderStatus(), initialExpectedEntries);
+                  tsBlockBuilderStatus.createColumnBuilderStatus(),
+                  initialExpectedEntries,
+                  types.get(i));
           break;
         case INT64:
         case TIMESTAMP:
           valueColumnBuilders[i] =
               new LongColumnBuilder(
-                  tsBlockBuilderStatus.createColumnBuilderStatus(), initialExpectedEntries);
+                  tsBlockBuilderStatus.createColumnBuilderStatus(),
+                  initialExpectedEntries,
+                  types.get(i));
           break;
         case FLOAT:
           valueColumnBuilders[i] =
@@ -211,7 +221,9 @@ public class TsBlockBuilder {
         case STRING:
           valueColumnBuilders[i] =
               new BinaryColumnBuilder(
-                  tsBlockBuilderStatus.createColumnBuilderStatus(), initialExpectedEntries);
+                  tsBlockBuilderStatus.createColumnBuilderStatus(),
+                  initialExpectedEntries,
+                  types.get(i));
           break;
         default:
           throw new IllegalArgumentException("Unknown data type: " + types.get(i));

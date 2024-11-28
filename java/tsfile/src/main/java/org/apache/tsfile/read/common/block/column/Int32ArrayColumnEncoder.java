@@ -55,7 +55,7 @@ public class Int32ArrayColumnEncoder implements ColumnEncoder {
             }
           }
         }
-        return new IntColumn(0, positionCount, nullIndicators, intValues);
+        return new IntColumn(0, positionCount, nullIndicators, intValues, dataType);
       case FLOAT:
         float[] floatValues = new float[positionCount];
         if (nullIndicators == null) {

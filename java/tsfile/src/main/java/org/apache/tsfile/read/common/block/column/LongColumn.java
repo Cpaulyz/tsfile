@@ -44,16 +44,23 @@ public class LongColumn implements Column {
   private final long[] values;
 
   private final long retainedSizeInBytes;
+  private final TSDataType dataType;
 
-  public LongColumn(int initialCapacity) {
-    this(0, 0, null, new long[initialCapacity]);
+  public LongColumn(int initialCapacity, TSDataType dataType) {
+    this(0, 0, null, new long[initialCapacity], dataType);
   }
 
-  public LongColumn(int positionCount, Optional<boolean[]> valueIsNull, long[] values) {
-    this(0, positionCount, valueIsNull.orElse(null), values);
+  public LongColumn(
+      int positionCount, Optional<boolean[]> valueIsNull, long[] values, TSDataType dataType) {
+    this(0, positionCount, valueIsNull.orElse(null), values, dataType);
   }
 
-  LongColumn(int arrayOffset, int positionCount, boolean[] valueIsNull, long[] values) {
+  LongColumn(
+      int arrayOffset,
+      int positionCount,
+      boolean[] valueIsNull,
+      long[] values,
+      TSDataType dataType) {
     if (arrayOffset < 0) {
       throw new IllegalArgumentException("arrayOffset is negative");
     }
@@ -75,11 +82,12 @@ public class LongColumn implements Column {
 
     retainedSizeInBytes =
         INSTANCE_SIZE + sizeOfLongArray(positionCount) + sizeOfBooleanArray(positionCount);
+    this.dataType = dataType;
   }
 
   @Override
   public TSDataType getDataType() {
-    return TSDataType.INT64;
+    return dataType;
   }
 
   @Override
@@ -140,7 +148,7 @@ public class LongColumn implements Column {
   @Override
   public Column getRegion(int positionOffset, int length) {
     checkValidRegion(getPositionCount(), positionOffset, length);
-    return new LongColumn(positionOffset + arrayOffset, length, valueIsNull, values);
+    return new LongColumn(positionOffset + arrayOffset, length, valueIsNull, values, dataType);
   }
 
   @Override
@@ -153,7 +161,7 @@ public class LongColumn implements Column {
         valueIsNull != null ? Arrays.copyOfRange(valueIsNull, from, to) : null;
     long[] valuesCopy = Arrays.copyOfRange(values, from, to);
 
-    return new LongColumn(0, length, valueIsNullCopy, valuesCopy);
+    return new LongColumn(0, length, valueIsNullCopy, valuesCopy, dataType);
   }
 
   @Override
@@ -161,7 +169,8 @@ public class LongColumn implements Column {
     if (fromIndex > positionCount) {
       throw new IllegalArgumentException("fromIndex is not valid");
     }
-    return new LongColumn(arrayOffset + fromIndex, positionCount - fromIndex, valueIsNull, values);
+    return new LongColumn(
+        arrayOffset + fromIndex, positionCount - fromIndex, valueIsNull, values, dataType);
   }
 
   @Override
@@ -176,7 +185,7 @@ public class LongColumn implements Column {
     long[] valuesCopy = Arrays.copyOfRange(values, from, positionCount);
 
     int length = positionCount - fromIndex;
-    return new LongColumn(0, length, valueIsNullCopy, valuesCopy);
+    return new LongColumn(0, length, valueIsNullCopy, valuesCopy, dataType);
   }
 
   @Override

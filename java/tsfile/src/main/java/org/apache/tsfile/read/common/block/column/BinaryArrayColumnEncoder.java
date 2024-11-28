@@ -68,7 +68,7 @@ public class BinaryArrayColumnEncoder implements ColumnEncoder {
         }
       }
     }
-    return new BinaryColumn(0, positionCount, nullIndicators, values);
+    return new BinaryColumn(0, positionCount, nullIndicators, values, dataType);
   }
 
   @Override

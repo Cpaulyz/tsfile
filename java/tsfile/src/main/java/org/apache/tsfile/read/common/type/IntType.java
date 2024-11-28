@@ -19,11 +19,20 @@
 
 package org.apache.tsfile.read.common.type;
 
+import org.apache.tsfile.block.column.ColumnBuilder;
+import org.apache.tsfile.enums.TSDataType;
+import org.apache.tsfile.read.common.block.column.IntColumnBuilder;
+
 public class IntType extends AbstractIntType {
 
   public static final IntType INT32 = new IntType();
 
   private IntType() {}
+
+  @Override
+  public ColumnBuilder createColumnBuilder(int expectedEntries) {
+    return new IntColumnBuilder(null, expectedEntries, TSDataType.INT32);
+  }
 
   @Override
   public TypeEnum getTypeEnum() {

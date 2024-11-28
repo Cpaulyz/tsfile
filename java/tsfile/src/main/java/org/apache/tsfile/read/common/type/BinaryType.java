@@ -19,10 +19,19 @@
 
 package org.apache.tsfile.read.common.type;
 
+import org.apache.tsfile.block.column.ColumnBuilder;
+import org.apache.tsfile.enums.TSDataType;
+import org.apache.tsfile.read.common.block.column.BinaryColumnBuilder;
+
 public class BinaryType extends AbstractVarcharType {
   public static final BinaryType TEXT = new BinaryType();
 
   private BinaryType() {}
+
+  @Override
+  public ColumnBuilder createColumnBuilder(int expectedEntries) {
+    return new BinaryColumnBuilder(null, expectedEntries, TSDataType.TEXT);
+  }
 
   @Override
   public TypeEnum getTypeEnum() {

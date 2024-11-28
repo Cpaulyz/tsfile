@@ -400,7 +400,7 @@ public class TsBlockTest {
       targetValue[i] = i;
     }
 
-    Column targetColumn = new IntColumn(19, Optional.empty(), targetValue);
+    Column targetColumn = new IntColumn(19, Optional.empty(), targetValue, TSDataType.INT32);
     tsBlock = tsBlock.insertValueColumn(1, new Column[] {targetColumn});
     for (int i = 0; i < 19; i++) {
       assertEquals(i, tsBlock.getColumn(0).getLong(i));
@@ -420,7 +420,7 @@ public class TsBlockTest {
     }
     Column[] targetColumn =
         new Column[] {
-          new IntColumn(19, Optional.empty(), targetValue1),
+          new IntColumn(19, Optional.empty(), targetValue1, TSDataType.INT32),
           new DoubleColumn(19, Optional.empty(), targetValue2)
         };
     tsBlock = tsBlock.insertValueColumn(1, targetColumn);
@@ -443,8 +443,8 @@ public class TsBlockTest {
     }
     Column[] targetColumn =
         new Column[] {
-          new IntColumn(19, Optional.empty(), targetValue),
-          new LongColumn(19, Optional.empty(), targetValue2)
+          new IntColumn(19, Optional.empty(), targetValue, TSDataType.INT32),
+          new LongColumn(19, Optional.empty(), targetValue2, TSDataType.INT64)
         };
     tsBlock = tsBlock.appendValueColumns(targetColumn);
     for (int i = 0; i < 19; i++) {

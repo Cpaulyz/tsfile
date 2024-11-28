@@ -37,10 +37,13 @@ public class LongColumnBuilder implements ColumnBuilder {
 
   private static final int INSTANCE_SIZE =
       (int) RamUsageEstimator.shallowSizeOfInstance(LongColumnBuilder.class);
-  public static final LongColumn NULL_VALUE_BLOCK =
-      new LongColumn(0, 1, new boolean[] {true}, new long[1]);
+  public static final LongColumn NULL_LONG_BLOCK =
+      new LongColumn(0, 1, new boolean[] {true}, new long[1], TSDataType.INT64);
+  public static final LongColumn NULL_TIMESTAMP_BLOCK =
+      new LongColumn(0, 1, new boolean[] {true}, new long[1], TSDataType.TIMESTAMP);
 
   private final ColumnBuilderStatus columnBuilderStatus;
+  private final TSDataType dataType;
   private boolean initialized;
   private final int initialEntryCount;
 
@@ -54,10 +57,11 @@ public class LongColumnBuilder implements ColumnBuilder {
 
   private long retainedSizeInBytes;
 
-  public LongColumnBuilder(ColumnBuilderStatus columnBuilderStatus, int expectedEntries) {
+  public LongColumnBuilder(
+      ColumnBuilderStatus columnBuilderStatus, int expectedEntries, TSDataType dataType) {
     this.columnBuilderStatus = columnBuilderStatus;
     this.initialEntryCount = max(expectedEntries, 1);
-
+    this.dataType = dataType;
     updateDataSize();
   }
 
@@ -116,14 +120,15 @@ public class LongColumnBuilder implements ColumnBuilder {
   @Override
   public Column build() {
     if (!hasNonNullValue) {
-      return new RunLengthEncodedColumn(NULL_VALUE_BLOCK, positionCount);
+      return new RunLengthEncodedColumn(
+          TSDataType.TIMESTAMP == dataType ? NULL_TIMESTAMP_BLOCK : NULL_LONG_BLOCK, positionCount);
     }
-    return new LongColumn(0, positionCount, hasNullValue ? valueIsNull : null, values);
+    return new LongColumn(0, positionCount, hasNullValue ? valueIsNull : null, values, dataType);
   }
 
   @Override
   public TSDataType getDataType() {
-    return TSDataType.INT64;
+    return dataType;
   }
 
   @Override
@@ -133,7 +138,8 @@ public class LongColumnBuilder implements ColumnBuilder {
 
   @Override
   public ColumnBuilder newColumnBuilderLike(ColumnBuilderStatus columnBuilderStatus) {
-    return new LongColumnBuilder(columnBuilderStatus, calculateBlockResetSize(positionCount));
+    return new LongColumnBuilder(
+        columnBuilderStatus, calculateBlockResetSize(positionCount), dataType);
   }
 
   private void growCapacity() {

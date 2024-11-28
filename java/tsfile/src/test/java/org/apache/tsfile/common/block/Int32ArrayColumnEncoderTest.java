@@ -51,7 +51,8 @@ public class Int32ArrayColumnEncoderTest {
         values[i] = random.nextInt();
       }
     }
-    IntColumn input = new IntColumn(positionCount, Optional.of(nullIndicators), values);
+    IntColumn input =
+        new IntColumn(positionCount, Optional.of(nullIndicators), values, TSDataType.INT32);
     long expectedRetainedSize = input.getRetainedSizeInBytes();
     ColumnEncoder encoder = ColumnEncoderFactory.get(ColumnEncoding.INT32_ARRAY);
 

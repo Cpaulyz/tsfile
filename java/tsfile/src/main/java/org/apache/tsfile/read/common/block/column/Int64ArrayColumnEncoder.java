@@ -54,7 +54,7 @@ public class Int64ArrayColumnEncoder implements ColumnEncoder {
             }
           }
         }
-        return new LongColumn(0, positionCount, nullIndicators, values);
+        return new LongColumn(0, positionCount, nullIndicators, values, dataType);
       case DOUBLE:
         double[] doubleValues = new double[positionCount];
         if (nullIndicators == null) {

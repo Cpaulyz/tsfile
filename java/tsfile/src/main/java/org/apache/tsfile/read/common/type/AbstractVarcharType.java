@@ -21,7 +21,6 @@ package org.apache.tsfile.read.common.type;
 
 import org.apache.tsfile.block.column.Column;
 import org.apache.tsfile.block.column.ColumnBuilder;
-import org.apache.tsfile.read.common.block.column.BinaryColumnBuilder;
 import org.apache.tsfile.utils.Binary;
 
 import java.util.Collections;
@@ -36,11 +35,6 @@ public abstract class AbstractVarcharType extends AbstractType {
   @Override
   public void writeBinary(ColumnBuilder builder, Binary value) {
     builder.writeBinary(value);
-  }
-
-  @Override
-  public ColumnBuilder createColumnBuilder(int expectedEntries) {
-    return new BinaryColumnBuilder(null, expectedEntries);
   }
 
   @Override

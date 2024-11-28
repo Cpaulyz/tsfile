@@ -44,16 +44,23 @@ public class IntColumn implements Column {
   private final int[] values;
 
   private final long retainedSizeInBytes;
+  private final TSDataType dataType;
 
-  public IntColumn(int initialCapacity) {
-    this(0, 0, null, new int[initialCapacity]);
+  public IntColumn(int initialCapacity, TSDataType dataType) {
+    this(0, 0, null, new int[initialCapacity], dataType);
   }
 
-  public IntColumn(int positionCount, Optional<boolean[]> valueIsNull, int[] values) {
-    this(0, positionCount, valueIsNull.orElse(null), values);
+  public IntColumn(
+      int positionCount, Optional<boolean[]> valueIsNull, int[] values, TSDataType dataType) {
+    this(0, positionCount, valueIsNull.orElse(null), values, dataType);
   }
 
-  IntColumn(int arrayOffset, int positionCount, boolean[] valueIsNull, int[] values) {
+  IntColumn(
+      int arrayOffset,
+      int positionCount,
+      boolean[] valueIsNull,
+      int[] values,
+      TSDataType dataType) {
     if (arrayOffset < 0) {
       throw new IllegalArgumentException("arrayOffset is negative");
     }
@@ -75,11 +82,12 @@ public class IntColumn implements Column {
 
     retainedSizeInBytes =
         INSTANCE_SIZE + sizeOfIntArray(positionCount) + sizeOfBooleanArray(positionCount);
+    this.dataType = dataType;
   }
 
   @Override
   public TSDataType getDataType() {
-    return TSDataType.INT32;
+    return dataType;
   }
 
   @Override
@@ -140,7 +148,7 @@ public class IntColumn implements Column {
   @Override
   public Column getRegion(int positionOffset, int length) {
     checkValidRegion(getPositionCount(), positionOffset, length);
-    return new IntColumn(positionOffset + arrayOffset, length, valueIsNull, values);
+    return new IntColumn(positionOffset + arrayOffset, length, valueIsNull, values, dataType);
   }
 
   @Override
@@ -153,7 +161,7 @@ public class IntColumn implements Column {
         valueIsNull != null ? Arrays.copyOfRange(valueIsNull, from, to) : null;
     int[] valuesCopy = Arrays.copyOfRange(values, from, to);
 
-    return new IntColumn(0, length, valueIsNullCopy, valuesCopy);
+    return new IntColumn(0, length, valueIsNullCopy, valuesCopy, dataType);
   }
 
   @Override
@@ -161,7 +169,8 @@ public class IntColumn implements Column {
     if (fromIndex > positionCount) {
       throw new IllegalArgumentException("fromIndex is not valid");
     }
-    return new IntColumn(arrayOffset + fromIndex, positionCount - fromIndex, valueIsNull, values);
+    return new IntColumn(
+        arrayOffset + fromIndex, positionCount - fromIndex, valueIsNull, values, dataType);
   }
 
   @Override
@@ -176,7 +185,7 @@ public class IntColumn implements Column {
     int[] valuesCopy = Arrays.copyOfRange(values, from, positionCount);
 
     int length = positionCount - fromIndex;
-    return new IntColumn(0, length, valueIsNullCopy, valuesCopy);
+    return new IntColumn(0, length, valueIsNullCopy, valuesCopy, dataType);
   }
 
   @Override

@@ -54,7 +54,8 @@ public class BinaryArrayColumnEncoderTest {
         values[i] = new Binary(value);
       }
     }
-    BinaryColumn input = new BinaryColumn(positionCount, Optional.of(nullIndicators), values);
+    BinaryColumn input =
+        new BinaryColumn(positionCount, Optional.of(nullIndicators), values, TSDataType.TEXT);
     long expectedRetainedSize = input.getRetainedSizeInBytes();
     ColumnEncoder encoder = ColumnEncoderFactory.get(ColumnEncoding.BINARY_ARRAY);
 

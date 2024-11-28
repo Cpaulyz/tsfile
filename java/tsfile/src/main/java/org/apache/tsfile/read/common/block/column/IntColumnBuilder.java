@@ -23,10 +23,12 @@ import org.apache.tsfile.block.column.Column;
 import org.apache.tsfile.block.column.ColumnBuilder;
 import org.apache.tsfile.block.column.ColumnBuilderStatus;
 import org.apache.tsfile.enums.TSDataType;
+import org.apache.tsfile.utils.DateUtils;
 import org.apache.tsfile.utils.RamUsageEstimator;
 import org.apache.tsfile.utils.TsPrimitiveType;
 import org.apache.tsfile.write.UnSupportedDataTypeException;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import static java.lang.Math.max;
@@ -37,10 +39,13 @@ public class IntColumnBuilder implements ColumnBuilder {
 
   private static final int INSTANCE_SIZE =
       (int) RamUsageEstimator.shallowSizeOfInstance(IntColumnBuilder.class);
-  public static final IntColumn NULL_VALUE_BLOCK =
-      new IntColumn(0, 1, new boolean[] {true}, new int[1]);
+  public static final IntColumn NULL_INT_BLOCK =
+      new IntColumn(0, 1, new boolean[] {true}, new int[1], TSDataType.INT32);
+  public static final IntColumn NULL_DATE_BLOCK =
+      new IntColumn(0, 1, new boolean[] {true}, new int[1], TSDataType.DATE);
 
   private final ColumnBuilderStatus columnBuilderStatus;
+  private final TSDataType dataType;
   private boolean initialized;
   private final int initialEntryCount;
 
@@ -54,8 +59,10 @@ public class IntColumnBuilder implements ColumnBuilder {
 
   private long retainedSizeInBytes;
 
-  public IntColumnBuilder(ColumnBuilderStatus columnBuilderStatus, int expectedEntries) {
+  public IntColumnBuilder(
+      ColumnBuilderStatus columnBuilderStatus, int expectedEntries, TSDataType dataType) {
     this.columnBuilderStatus = columnBuilderStatus;
+    this.dataType = dataType;
     this.initialEntryCount = max(expectedEntries, 1);
 
     updateDataSize();
@@ -82,6 +89,9 @@ public class IntColumnBuilder implements ColumnBuilder {
   public ColumnBuilder writeObject(Object value) {
     if (value instanceof Integer) {
       writeInt((Integer) value);
+      return this;
+    } else if (value instanceof LocalDate) {
+      writeInt(DateUtils.parseDateExpressionToInt((LocalDate) value));
       return this;
     }
     throw new UnSupportedDataTypeException("IntegerColumn only support Integer data type");
@@ -116,14 +126,15 @@ public class IntColumnBuilder implements ColumnBuilder {
   @Override
   public Column build() {
     if (!hasNonNullValue) {
-      return new RunLengthEncodedColumn(NULL_VALUE_BLOCK, positionCount);
+      return new RunLengthEncodedColumn(
+          TSDataType.DATE == dataType ? NULL_DATE_BLOCK : NULL_INT_BLOCK, positionCount);
     }
-    return new IntColumn(0, positionCount, hasNullValue ? valueIsNull : null, values);
+    return new IntColumn(0, positionCount, hasNullValue ? valueIsNull : null, values, dataType);
   }
 
   @Override
   public TSDataType getDataType() {
-    return TSDataType.INT32;
+    return dataType;
   }
 
   @Override
@@ -133,7 +144,8 @@ public class IntColumnBuilder implements ColumnBuilder {
 
   @Override
   public ColumnBuilder newColumnBuilderLike(ColumnBuilderStatus columnBuilderStatus) {
-    return new IntColumnBuilder(columnBuilderStatus, calculateBlockResetSize(positionCount));
+    return new IntColumnBuilder(
+        columnBuilderStatus, calculateBlockResetSize(positionCount), dataType);
   }
 
   private void growCapacity() {

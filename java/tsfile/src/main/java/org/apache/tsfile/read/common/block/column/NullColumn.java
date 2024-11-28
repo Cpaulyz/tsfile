@@ -118,19 +118,23 @@ public class NullColumn implements Column {
       case BOOLEAN:
         return new RunLengthEncodedColumn(BooleanColumnBuilder.NULL_VALUE_BLOCK, positionCount);
       case INT32:
+        return new RunLengthEncodedColumn(IntColumnBuilder.NULL_INT_BLOCK, positionCount);
       case DATE:
-        return new RunLengthEncodedColumn(IntColumnBuilder.NULL_VALUE_BLOCK, positionCount);
+        return new RunLengthEncodedColumn(IntColumnBuilder.NULL_DATE_BLOCK, positionCount);
       case INT64:
+        return new RunLengthEncodedColumn(LongColumnBuilder.NULL_LONG_BLOCK, positionCount);
       case TIMESTAMP:
-        return new RunLengthEncodedColumn(LongColumnBuilder.NULL_VALUE_BLOCK, positionCount);
+        return new RunLengthEncodedColumn(LongColumnBuilder.NULL_TIMESTAMP_BLOCK, positionCount);
       case FLOAT:
         return new RunLengthEncodedColumn(FloatColumnBuilder.NULL_VALUE_BLOCK, positionCount);
       case DOUBLE:
         return new RunLengthEncodedColumn(DoubleColumnBuilder.NULL_VALUE_BLOCK, positionCount);
       case TEXT:
+        return new RunLengthEncodedColumn(BinaryColumnBuilder.NULL_TEXT_BLOCK, positionCount);
       case BLOB:
+        return new RunLengthEncodedColumn(BinaryColumnBuilder.NULL_BLOB_BLOCK, positionCount);
       case STRING:
-        return new RunLengthEncodedColumn(BinaryColumnBuilder.NULL_VALUE_BLOCK, positionCount);
+        return new RunLengthEncodedColumn(BinaryColumnBuilder.NULL_STRING_BLOCK, positionCount);
       default:
         throw new IllegalArgumentException("Unknown data type: " + dataType);
     }

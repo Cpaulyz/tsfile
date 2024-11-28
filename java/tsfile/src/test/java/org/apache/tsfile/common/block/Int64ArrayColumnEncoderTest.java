@@ -52,7 +52,8 @@ public class Int64ArrayColumnEncoderTest {
         values[i] = random.nextLong();
       }
     }
-    LongColumn input = new LongColumn(positionCount, Optional.of(nullIndicators), values);
+    LongColumn input =
+        new LongColumn(positionCount, Optional.of(nullIndicators), values, TSDataType.INT64);
     long expectedRetainedSize = input.getRetainedSizeInBytes();
     ColumnEncoder encoder = ColumnEncoderFactory.get(ColumnEncoding.INT64_ARRAY);
 

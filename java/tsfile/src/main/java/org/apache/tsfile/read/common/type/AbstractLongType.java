@@ -21,7 +21,6 @@ package org.apache.tsfile.read.common.type;
 
 import org.apache.tsfile.block.column.Column;
 import org.apache.tsfile.block.column.ColumnBuilder;
-import org.apache.tsfile.read.common.block.column.LongColumnBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -66,11 +65,6 @@ public abstract class AbstractLongType extends AbstractType {
   @Override
   public void writeDouble(ColumnBuilder builder, double value) {
     builder.writeLong((long) value);
-  }
-
-  @Override
-  public ColumnBuilder createColumnBuilder(int expectedEntries) {
-    return new LongColumnBuilder(null, expectedEntries);
   }
 
   @Override
